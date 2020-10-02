@@ -11,7 +11,7 @@ CREATE TABLE "user"
     id int,
     username varchar(200),
     kind varchar(100),
-    last_modified varchar(100),
+    last_modified timestamp,
     permalink varchar(200),
     uri varchar(200),
     PRIMARY KEY (id)
@@ -35,7 +35,7 @@ CREATE TABLE kind(
     PRIMARY KEY (id)
 );
 
-CREATE TABLE licence(
+CREATE TABLE license(
     id int,
     license varchar(100),
     PRIMARY KEY (id)
@@ -44,7 +44,7 @@ CREATE TABLE licence(
 CREATE TABLE track(
     id int,
     title varchar(200),
-    uri varchar(100),
+    uri varchar(200),
     isrc varchar(100),
     genre int,
     kind  int,
@@ -54,11 +54,11 @@ CREATE TABLE track(
     comment_count int,
     downloadable bool,
     download_count int,
-    created_at varchar(100),
+    created_at timestamp,
     description varchar(1000),
     duration int,
     label_name varchar(100),
-    last_modified varchar(100),
+    last_modified timestamp,
     original_content_size int,
     original_format varchar(20),
     permalink varchar(200),
@@ -73,7 +73,7 @@ CREATE TABLE track(
     PRIMARY KEY (id),
     FOREIGN KEY (genre) references genre(id),
     FOREIGN KEY (kind) references kind(id),
-    FOREIGN KEY (license) references licence(id)
+    FOREIGN KEY (license) references license(id)
 );
 
 CREATE TABLE track_label(
