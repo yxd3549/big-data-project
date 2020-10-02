@@ -101,8 +101,12 @@ def loadscdata(cur):
     trackData = pd.read_json(r"SoundCloud_Tracks_2018-12", lines=True)
     # trackData = pd.read_json(r"smallsc", lines=True)
     trackData = trackData.replace('\|', '/', regex=True)
-    trackData = trackData.replace('\\\\', '!', regex=True)
+    trackData = trackData.replace('[\\n\\r]+', '', regex=True)
+    trackData = trackData.replace('\\r', '', regex=True)
+    trackData = trackData.replace('\\n', '', regex=True)
+    trackData = trackData.replace('\r', '', regex=True)
     trackData = trackData.replace('\n', '', regex=True)
+    trackData = trackData.replace('\\\\', '!', regex=True)
 
     genreDict = {}
     licenseDict = {}
