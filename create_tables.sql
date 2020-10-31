@@ -35,7 +35,7 @@ CREATE TABLE kind(
     PRIMARY KEY (id)
 );
 
-CREATE TABLE licence(
+CREATE TABLE license(
     id int,
     license varchar(100),
     PRIMARY KEY (id)
@@ -44,7 +44,7 @@ CREATE TABLE licence(
 CREATE TABLE track(
     id int,
     title varchar(200),
-    uri varchar(100),
+    uri varchar(200),
     isrc varchar(100),
     genre int,
     kind  int,
@@ -73,7 +73,7 @@ CREATE TABLE track(
     PRIMARY KEY (id),
     FOREIGN KEY (genre) references genre(id),
     FOREIGN KEY (kind) references kind(id),
-    FOREIGN KEY (license) references licence(id)
+    FOREIGN KEY (license) references license(id)
 );
 
 CREATE TABLE track_label(
