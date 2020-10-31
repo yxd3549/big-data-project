@@ -1,17 +1,17 @@
 # Created by: Andrew Chabot, Yancarlos Diaz, Daniel Moore, and Jian He
 # CSCI-620 Group 2 Phase 1
+import json
+
 import psycopg2 as dbpg
 import pandas as pd
 import io
 import time
 
-
 def connect():
     return dbpg.connect(
         host="127.0.0.1",
         database="soundcloud",
-        user="postgres",
-        password="csci620soundcloud")
+        user="postgres")
 
 # function to create
 def createtables(cur):
@@ -105,8 +105,16 @@ def createtables(cur):
                 );")
 
 def loadscdata(conn, cur):
-    # load our data from our soundcloud file into a data frame using pandas
-    trackData = pd.read_json(r"SoundCloud_Tracks_2018-12", lines=True)
+
+    print("Test")
+
+    with open('SoundCloud_Tracks_2018-12') as json_file:
+        data = json_file.readlines()
+        data = list(map(json.loads, data))
+
+    trackData = pd.DataFrame(data)
+
+    print("Test 2")
 
     # filter our data to get rid of garbage escape characters that we don't want in output
     trackData = trackData.replace('\|', '/', regex=True)
@@ -126,13 +134,13 @@ def loadscdata(conn, cur):
     userDict = {}
 
     # create a string io object that we will filter our data into for each table
-    track_file = io.StringIO()
-    genre_file = io.StringIO()
-    license_file = io.StringIO()
-    kind_file = io.StringIO()
-    tag_file = io.StringIO()
-    user_file = io.StringIO()
-    track_tag_file = io.StringIO()
+    track_file = open("track_file", "w+")
+    genre_file = open("genre_file", "w+")
+    license_file = open("license_file", "w+")
+    kind_file = open("kind_file", "w+")
+    tag_file = open("tag_file", "w+")
+    user_file = open("user_file", "w+")
+    track_tag_file = open("track_tag_file", "w+")
 
     # initialize our counts that will be used for counting IDs
     genreCount = 0
@@ -159,30 +167,33 @@ def loadscdata(conn, cur):
 
             # add items to our genre dictionary and write these to our genre file
             if row.genre not in genreDict:
-                genreClean = row.genre
-                if len(row.genre) > 100:
-                    genreClean = row.genre[0:99]
-                genreCount += 1
-                genreDict[genreClean] = genreCount
-                genre_file.write('|'.join(map(str, [genreCount, genreClean])) + '\n')
+                if row.genre is not None:
+                    genreClean = row.genre
+                    if len(row.genre) > 100:
+                        genreClean = row.genre[0:99]
+                    genreCount += 1
+                    genreDict[genreClean] = genreCount
+                    genre_file.write('|'.join(map(str, [genreCount, genreClean])) + '\n')
 
             # add items to our license dictionary and write these to our license file
             if row.license not in licenseDict:
-                licenseClean = row.license
-                if len(row.license) > 100:
-                    licenseClean = row.license[0:99]
-                licenseCount += 1
-                licenseDict[licenseClean] = licenseCount
-                license_file.write('|'.join(map(str, [licenseCount, licenseClean])) + '\n')
+                if row.license is not None:
+                    licenseClean = row.license
+                    if len(row.license) > 100:
+                        licenseClean = row.license[0:99]
+                    licenseCount += 1
+                    licenseDict[licenseClean] = licenseCount
+                    license_file.write('|'.join(map(str, [licenseCount, licenseClean])) + '\n')
 
             # add items to our kind dictionary and write these to our kind file
             if row.kind not in kindDict:
-                kindClean = row.kind
-                if len(row.kind) > 100:
-                    kindClean = row.kind[0:99]
-                kindCount += 1
-                kindDict[kindClean] = kindCount
-                kind_file.write('|'.join(map(str, [kindCount, kindClean])) + '\n')
+                if row.kind is not None:
+                    kindClean = row.kind
+                    if len(row.kind) > 100:
+                        kindClean = row.kind[0:99]
+                    kindCount += 1
+                    kindDict[kindClean] = kindCount
+                    kind_file.write('|'.join(map(str, [kindCount, kindClean])) + '\n')
 
             # add all tags to our tag dictionary if not already there and write these to our tag file
             for tag in row.tag_list.split(' '):
@@ -218,7 +229,8 @@ def loadscdata(conn, cur):
                 user_file.write('|'.join(map(str, [userData.id, cleanUsername, cleanKind, cleanLastMod,
                                                    cleanPermalink, cleanUri])) + '\n')
                 userDict[userData.id] = userCount
-        except Exception:
+        except Exception as e:
+            print(e)
             # catch any issues and skip addition of the row
             skipCount += 1
             if skipCount % 1000 == 0:
@@ -237,54 +249,70 @@ def loadscdata(conn, cur):
                 track_tag_file.write('|'.join(map(str, [row.id, tagDict[tag]])) + '\n')
 
             # a ton of value cleaning to make sure our copy doesn't fail later
-            cleanGenre = str(row.genre)
-            if len(cleanGenre) > 100:
-                cleanGenre = row.genre[0:99]
-            cleanLicense = str(row.license)
-            if len(cleanLicense) > 100:
-                cleanLicense = cleanLicense[0:99]
-            cleanKind = str(row.kind)
-            if len(cleanKind) > 100:
-                cleanKind = cleanKind[0:99]
-            cleanTitle = str(row.title)
-            if len(cleanTitle) > 200:
-                cleanTitle = cleanTitle[0:199]
-            cleanUri = str(row.uri)
-            if len(cleanUri) > 200:
-                cleanUri = cleanUri[0:199]
-            cleanIsrc = str(row.isrc)
-            if len(cleanIsrc) > 100:
-                cleanIsrc = cleanIsrc[0:99]
-            cleanDescription = str(row.description)
-            if len(cleanDescription) > 1000:
-                cleanDescription = cleanDescription[0:999]
-            cleanLabelName = str(row.label_name)
-            if len(cleanLabelName) > 100:
-                cleanLabelName = cleanLabelName[0:99]
-            cleanOrigFormat = str(row.original_format)
-            if len(cleanOrigFormat) > 20:
-                cleanOrigFormat = cleanOrigFormat[0:19]
-            cleanPermalink = str(row.permalink)
-            if len(cleanPermalink) > 200:
-                cleanPermalink = cleanPermalink[0:199]
-            cleanPermalinkUrl = str(row.permalink_url)
-            if len(cleanPermalinkUrl) > 500:
-                cleanPermalinkUrl = cleanPermalinkUrl[0:499]
-            cleanStreamUrl = str(row.stream_url)
-            if len(cleanStreamUrl) > 500:
-                cleanStreamUrl = cleanStreamUrl[0:499]
-            cleanTrackType = str(row.track_type)
-            if len(cleanTrackType) > 100:
-                cleanTrackType = cleanTrackType[0:99]
-            cleanWaveformUrl = str(row.waveform_url)
-            if len(cleanWaveformUrl) > 100:
-                cleanWaveformUrl = cleanWaveformUrl[0:99]
-            cleanLastMod = str(row.last_modified)
-            if len(cleanLastMod) > 100:
-                cleanLastMod = cleanLastMod[0:99]
-            cleanCreatedAt = str(row.created_at)
-            if len(cleanCreatedAt) > 100:
-                cleanCreatedAt = cleanCreatedAt[0:99]
+            if row.genre is not None:
+                cleanGenre = str(row.genre)
+                if len(cleanGenre) > 100:
+                    cleanGenre = row.genre[0:99]
+            if row.license is not None:
+                cleanLicense = str(row.license)
+                if len(cleanLicense) > 100:
+                    cleanLicense = cleanLicense[0:99]
+            if row.kind is not None:
+                cleanKind = str(row.kind)
+                if len(cleanKind) > 100:
+                    cleanKind = cleanKind[0:99]
+            if row.title is not None:
+                cleanTitle = str(row.title)
+                if len(cleanTitle) > 200:
+                    cleanTitle = cleanTitle[0:199]
+            if row.uri is not None:
+                cleanUri = str(row.uri)
+                if len(cleanUri) > 200:
+                    cleanUri = cleanUri[0:199]
+            if row.isrc is not None:
+                cleanIsrc = str(row.isrc)
+                if len(cleanIsrc) > 100:
+                    cleanIsrc = cleanIsrc[0:99]
+            if row.description is not None:
+                cleanDescription = str(row.description)
+                if len(cleanDescription) > 1000:
+                    cleanDescription = cleanDescription[0:999]
+            if row.label_name is not None:
+                cleanLabelName = str(row.label_name)
+                if len(cleanLabelName) > 100:
+                    cleanLabelName = cleanLabelName[0:99]
+            if row.original_format is not None:
+                cleanOrigFormat = str(row.original_format)
+                if len(cleanOrigFormat) > 20:
+                    cleanOrigFormat = cleanOrigFormat[0:19]
+            if row.permalink is not None:
+                cleanPermalink = str(row.permalink)
+                if len(cleanPermalink) > 200:
+                    cleanPermalink = cleanPermalink[0:199]
+            if row.permalink_url is not None:
+                cleanPermalinkUrl = str(row.permalink_url)
+                if len(cleanPermalinkUrl) > 500:
+                    cleanPermalinkUrl = cleanPermalinkUrl[0:499]
+            if row.stream_url is not None:
+                cleanStreamUrl = str(row.stream_url)
+                if len(cleanStreamUrl) > 500:
+                    cleanStreamUrl = cleanStreamUrl[0:499]
+            if row.track_type is not None:
+                cleanTrackType = str(row.track_type)
+                if len(cleanTrackType) > 100:
+                    cleanTrackType = cleanTrackType[0:99]
+            if row.waveform_url is not None:
+                cleanWaveformUrl = str(row.waveform_url)
+                if len(cleanWaveformUrl) > 100:
+                    cleanWaveformUrl = cleanWaveformUrl[0:99]
+            if row.last_modified is not None:
+                cleanLastMod = str(row.last_modified)
+                if len(cleanLastMod) > 100:
+                    cleanLastMod = cleanLastMod[0:99]
+            if row.created_at is not None:
+                cleanCreatedAt = str(row.created_at)
+                if len(cleanCreatedAt) > 100:
+                    cleanCreatedAt = cleanCreatedAt[0:99]
 
             # write to our stringIO object in a separated value format
             track_file.write('|'.join(map(str, [int(row.id), cleanTitle, cleanUri, cleanIsrc, genreDict[cleanGenre],
@@ -296,20 +324,13 @@ def loadscdata(conn, cur):
                                                 cleanPermalinkUrl, int(row.playback_count), int(row.retrieved_utc),
                                                 cleanStreamUrl, bool(row.streamable), cleanTrackType,
                                                 cleanWaveformUrl])) + '\n')
-        except Exception:
+        except Exception as e:
+            print(e)
             # catch any issues and just skip problematic lines
             skipCount += 1
             if skipCount % 1000 == 0:
                 print('skipped row ' + str(skipCount))
             continue
-
-    track_file.seek(0)
-    license_file.seek(0)
-    genre_file.seek(0)
-    tag_file.seek(0)
-    kind_file.seek(0)
-    user_file.seek(0)
-    track_tag_file.seek(0)
 
     # actually execute our copy statements with the created file
     cur.copy_from(license_file, 'license', sep='|')
@@ -326,6 +347,14 @@ def loadscdata(conn, cur):
     print("track table copied")
     cur.copy_from(track_tag_file, 'track_tag', sep='|')
     print("track_tag table copied")
+
+    track_file.close()
+    genre_file.close()
+    license_file.close()
+    kind_file.close()
+    tag_file.close()
+    user_file.close()
+    track_tag_file.close()
 
     # commit our changes before we delete and create primary and foreign keys
     conn.commit()
