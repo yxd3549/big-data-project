@@ -60,7 +60,8 @@ def load_data():
                     'stream_url': track['stream_url'],
                     'streamable': track['streamable'],
                     'track_type': track['track_type'],
-                    'waveform_url': track['waveform_url']
+                    'waveform_url': track['waveform_url'],
+                    'tags': track['tag_list'].split(' ')
                 }
                 tracks_collection.append(track_document)
                 users_collection[user_object['id']] = user_document
