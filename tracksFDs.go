@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"time"
 )
 
@@ -40,12 +41,33 @@ type track struct {
 }
 
 type genericTrackMaps struct {
-	Id           map[string]int
-	Username     map[string]sql.NullString
-	Kind         map[string]sql.NullString
-	LastModified map[string]sql.NullString
-	Permalink    map[string]sql.NullString
-	Uri          map[string]sql.NullString
+	Id                  map[string]int
+	Title               map[string]sql.NullString
+	Uri                 map[string]sql.NullString
+	Isrc                map[string]sql.NullString
+	Genre               map[string]sql.NullInt32
+	Kind                map[string]sql.NullInt32
+	License             map[string]sql.NullInt32
+	LikesCount          map[string]sql.NullInt32
+	Commentable         map[string]sql.NullBool
+	CommentCount        map[string]sql.NullInt32
+	Downloadable        map[string]sql.NullBool
+	DownloadCount       map[string]sql.NullInt32
+	CreatedAt           map[string]sql.NullString
+	Description         map[string]sql.NullString
+	Duration            map[string]sql.NullInt32
+	LableName           map[string]sql.NullString
+	LastModified        map[string]sql.NullString
+	OriginalContentSize map[string]sql.NullInt32
+	OriginalFormat      map[string]sql.NullString
+	Permalink           map[string]sql.NullString
+	PermalinkUrl        map[string]sql.NullString
+	PlaybackCount       map[string]sql.NullInt32
+	RetrievedUtc        map[string]sql.NullInt32
+	StreamUrl           map[string]sql.NullString
+	Streamable          map[string]sql.NullBool
+	TrackType           map[string]sql.NullString
+	WaveformUrl         map[string]sql.NullString
 }
 
 func readInTrackData() []track {
@@ -95,39 +117,144 @@ func readInTrackData() []track {
 	return data
 }
 
-//func getValueByColumnNum(loc int, elem user) string {
-//	switch loc {
-//	case 0:
-//		return strconv.Itoa(elem.Id)
-//	case 1:
-//		if elem.Username.Valid {
-//			return elem.Username.String
-//		}
-//		return ""
-//	case 2:
-//		if elem.Kind.Valid {
-//			return elem.Kind.String
-//		}
-//		return ""
-//	case 3:
-//		if elem.LastModified.Valid {
-//			return elem.LastModified.String
-//		}
-//		return ""
-//	case 4:
-//		if elem.Permalink.Valid {
-//			return elem.Permalink.String
-//		}
-//		return ""
-//	case 5:
-//		if elem.Uri.Valid {
-//			return elem.Uri.String
-//		}
-//		return ""
-//	}
-//	return ""
-//}
-//
+func getValueByColumnNumTrack(loc int, elem track) string {
+	switch loc {
+	case 0:
+		return strconv.Itoa(elem.Id)
+	case 1:
+		if elem.Title.Valid {
+			return elem.Title.String
+		}
+		return ""
+	case 2:
+		if elem.Uri.Valid {
+			return elem.Uri.String
+		}
+		return ""
+	case 3:
+		if elem.Isrc.Valid {
+			return elem.Isrc.String
+		}
+		return ""
+	case 4:
+		if elem.Genre.Valid {
+			return strconv.Itoa(int(elem.Genre.Int32))
+		}
+		return ""
+	case 5:
+		if elem.Kind.Valid {
+			return strconv.Itoa(int(elem.Kind.Int32))
+		}
+		return ""
+	case 6:
+		if elem.License.Valid {
+			return strconv.Itoa(int(elem.License.Int32))
+		}
+		return ""
+	case 7:
+		if elem.LikesCount.Valid {
+			return strconv.Itoa(int(elem.LikesCount.Int32))
+		}
+		return ""
+	case 8:
+		if elem.Commentable.Valid {
+			return strconv.FormatBool(elem.Commentable.Bool)
+		}
+		return ""
+	case 9:
+		if elem.CommentCount.Valid {
+			return strconv.Itoa(int(elem.CommentCount.Int32))
+		}
+		return ""
+	case 10:
+		if elem.Downloadable.Valid {
+			return strconv.FormatBool(elem.Downloadable.Bool)
+		}
+		return ""
+	case 11:
+		if elem.DownloadCount.Valid {
+			return strconv.Itoa(int(elem.DownloadCount.Int32))
+		}
+		return ""
+	case 12:
+		if elem.CreatedAt.Valid {
+			return elem.CreatedAt.String
+		}
+		return ""
+	case 13:
+		if elem.Description.Valid {
+			return elem.Description.String
+		}
+		return ""
+	case 14:
+		if elem.Duration.Valid {
+			return strconv.Itoa(int(elem.Duration.Int32))
+		}
+		return ""
+	case 15:
+		if elem.LabelName.Valid {
+			return elem.LabelName.String
+		}
+		return ""
+	case 16:
+		if elem.LastModified.Valid {
+			return elem.LastModified.String
+		}
+		return ""
+	case 17:
+		if elem.OriginalContentSize.Valid {
+			return strconv.Itoa(int(elem.OriginalContentSize.Int32))
+		}
+		return ""
+	case 18:
+		if elem.OriginalFormat.Valid {
+			return elem.OriginalFormat.String
+		}
+		return ""
+	case 19:
+		if elem.Permalink.Valid {
+			return elem.Permalink.String
+		}
+		return ""
+	case 20:
+		if elem.PermalinkUrl.Valid {
+			return elem.PermalinkUrl.String
+		}
+		return ""
+	case 21:
+		if elem.PlaybackCount.Valid {
+			return strconv.Itoa(int(elem.PlaybackCount.Int32))
+		}
+		return ""
+	case 22:
+		if elem.RetrievedUtc.Valid {
+			return strconv.Itoa(int(elem.RetrievedUtc.Int32))
+		}
+		return ""
+	case 23:
+		if elem.StreamUrl.Valid {
+			return elem.StreamUrl.String
+		}
+		return ""
+	case 24:
+		if elem.Streamable.Valid {
+			return strconv.FormatBool(elem.Streamable.Bool)
+		}
+		return ""
+	case 25:
+		if elem.TrackType.Valid {
+			return elem.TrackType.String
+		}
+		return ""
+	case 26:
+		if elem.WaveformUrl.Valid {
+			return elem.WaveformUrl.String
+		}
+		return ""
+	}
+	return ""
+}
+
 //func checkGroupsOfOne(data []user) [6][6]bool {
 //
 //	var relArr [6][6]bool
