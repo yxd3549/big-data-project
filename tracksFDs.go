@@ -662,15 +662,57 @@ func checkGroupsOfOneTrack(data []track) [27][27]bool {
 		case 0:
 			header += "id->"
 		case 1:
-			header += "username->"
+			header += "title->"
 		case 2:
-			header += "kind->"
-		case 3:
-			header += "last_modified->"
-		case 4:
-			header += "permalink->"
-		case 5:
 			header += "uri->"
+		case 3:
+			header += "isrc->"
+		case 4:
+			header += "genre->"
+		case 5:
+			header += "kind->"
+		case 6:
+			header += "license->"
+		case 7:
+			header += "likes_count->"
+		case 8:
+			header += "commentable->"
+		case 9:
+			header += "comment_count->"
+		case 10:
+			header += "downloadable->"
+		case 11:
+			header += "download_count->"
+		case 12:
+			header += "created_at->"
+		case 13:
+			header += "description->"
+		case 14:
+			header += "duration->"
+		case 15:
+			header += "label_name->"
+		case 16:
+			header += "last_modified->"
+		case 17:
+			header += "original_content_size->"
+		case 18:
+			header += "original_format->"
+		case 19:
+			header += "permalink->"
+		case 20:
+			header += "permalink_url->"
+		case 21:
+			header += "playback_count->"
+		case 22:
+			header += "received_utc->"
+		case 23:
+			header += "stream_url->"
+		case 24:
+			header += "streamable->"
+		case 25:
+			header += "track_type->"
+		case 26:
+			header += "waveform_url->"
 		}
 
 		for idx, valid := range isValid {
@@ -681,15 +723,57 @@ func checkGroupsOfOneTrack(data []track) [27][27]bool {
 				case 0:
 					println(header + "id")
 				case 1:
-					println(header + "username")
+					println(header + "title")
 				case 2:
-					println(header + "kind")
-				case 3:
-					println(header + "last_modified")
-				case 4:
-					println(header + "permalink")
-				case 5:
 					println(header + "uri")
+				case 3:
+					println(header + "isrc")
+				case 4:
+					println(header + "genre")
+				case 5:
+					println(header + "kind")
+				case 6:
+					println(header + "license")
+				case 7:
+					println(header + "likes_count")
+				case 8:
+					println(header + "commentable")
+				case 9:
+					println(header + "comment_count")
+				case 10:
+					println(header + "downloadable")
+				case 11:
+					println(header + "download_count")
+				case 12:
+					println(header + "created_at")
+				case 13:
+					println(header + "description")
+				case 14:
+					println(header + "duration")
+				case 15:
+					println(header + "label_name")
+				case 16:
+					println(header + "last_modified")
+				case 17:
+					println(header + "original_content_size")
+				case 18:
+					println(header + "original_format")
+				case 19:
+					println(header + "permalink")
+				case 20:
+					println(header + "permalink_url")
+				case 21:
+					println(header + "playback_count")
+				case 22:
+					println(header + "received_utc")
+				case 23:
+					println(header + "stream_url")
+				case 24:
+					println(header + "streamable")
+				case 25:
+					println(header + "track_type")
+				case 26:
+					println(header + "waveform_url")
 				}
 			}
 		}
