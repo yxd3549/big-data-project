@@ -407,6 +407,253 @@ func checkGroupsOfOneTrack(data []track) [27][27]bool {
 				}
 			}
 
+			// commentable
+			commentable, ok := maps.Commentable[key]
+
+			if !ok {
+				maps.Commentable[key] = elem.Commentable
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Commentable.Bool != commentable.Bool {
+
+					isValid[8] = false
+				}
+			}
+
+			// commentCount
+			commentCount, ok := maps.CommentCount[key]
+
+			if !ok {
+				maps.CommentCount[key] = elem.CommentCount
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.CommentCount.Int32 != commentCount.Int32 {
+
+					isValid[9] = false
+				}
+			}
+
+			// downloadable
+			downloadable, ok := maps.Downloadable[key]
+
+			if !ok {
+				maps.Downloadable[key] = elem.Downloadable
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Downloadable.Bool != downloadable.Bool {
+
+					isValid[10] = false
+				}
+			}
+
+			// downloadCount
+			downloadCount, ok := maps.DownloadCount[key]
+
+			if !ok {
+				maps.DownloadCount[key] = elem.DownloadCount
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.DownloadCount.Int32 != downloadCount.Int32 {
+
+					isValid[11] = false
+				}
+			}
+
+			// createdAt
+			createdAt, ok := maps.CreatedAt[key]
+
+			if !ok {
+				maps.CreatedAt[key] = elem.CreatedAt
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.CreatedAt.String != createdAt.String {
+
+					isValid[12] = false
+				}
+			}
+
+			// description
+			description, ok := maps.Description[key]
+
+			if !ok {
+				maps.Description[key] = elem.Description
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Description.String != description.String {
+
+					isValid[13] = false
+				}
+			}
+
+			// genre
+			duration, ok := maps.Duration[key]
+
+			if !ok {
+				maps.Duration[key] = elem.Duration
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Duration.Int32 != duration.Int32 {
+
+					isValid[14] = false
+				}
+			}
+
+			// labelName
+			labelName, ok := maps.LableName[key]
+
+			if !ok {
+				maps.LableName[key] = elem.LabelName
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.LabelName.String != labelName.String {
+
+					isValid[15] = false
+				}
+			}
+
+			// lastModified
+			lastModified, ok := maps.LastModified[key]
+
+			if !ok {
+				maps.LastModified[key] = elem.LastModified
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.LastModified.String != lastModified.String {
+
+					isValid[16] = false
+				}
+			}
+
+			// originalContentSize
+			originalContentSize, ok := maps.OriginalContentSize[key]
+
+			if !ok {
+				maps.OriginalContentSize[key] = elem.OriginalContentSize
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.OriginalContentSize.Int32 != originalContentSize.Int32 {
+
+					isValid[17] = false
+				}
+			}
+
+			// originalFormat
+			originalFormat, ok := maps.OriginalFormat[key]
+
+			if !ok {
+				maps.OriginalFormat[key] = elem.OriginalFormat
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.OriginalFormat.String != originalFormat.String {
+
+					isValid[18] = false
+				}
+			}
+
+			// permalink
+			permalink, ok := maps.Permalink[key]
+
+			if !ok {
+				maps.Permalink[key] = elem.Permalink
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Permalink.String != permalink.String {
+
+					isValid[19] = false
+				}
+			}
+
+			// permalink
+			permalinkUrl, ok := maps.PermalinkUrl[key]
+
+			if !ok {
+				maps.PermalinkUrl[key] = elem.PermalinkUrl
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.PermalinkUrl.String != permalinkUrl.String {
+
+					isValid[20] = false
+				}
+			}
+
+			// playbackCount
+			playbackCount, ok := maps.PlaybackCount[key]
+
+			if !ok {
+				maps.PlaybackCount[key] = elem.PlaybackCount
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.PlaybackCount.Int32 != playbackCount.Int32 {
+
+					isValid[21] = false
+				}
+			}
+
+			// retrievedUTC
+			RetrievedUtc, ok := maps.RetrievedUtc[key]
+
+			if !ok {
+				maps.RetrievedUtc[key] = elem.RetrievedUtc
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.RetrievedUtc.Int32 != RetrievedUtc.Int32 {
+
+					isValid[22] = false
+				}
+			}
+
+			// streamURL
+			streamURL, ok := maps.StreamUrl[key]
+
+			if !ok {
+				maps.StreamUrl[key] = elem.StreamUrl
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.StreamUrl.String != streamURL.String {
+
+					isValid[23] = false
+				}
+			}
+
+			// streamable
+			streamable, ok := maps.Streamable[key]
+
+			if !ok {
+				maps.Streamable[key] = elem.Streamable
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Streamable.Bool != streamable.Bool {
+
+					isValid[24] = false
+				}
+			}
+
+			// trackType
+			trackType, ok := maps.TrackType[key]
+
+			if !ok {
+				maps.TrackType[key] = elem.TrackType
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.TrackType.String != trackType.String {
+
+					isValid[25] = false
+				}
+			}
+
+			// waveformURL
+			waveformURL, ok := maps.WaveformUrl[key]
+
+			if !ok {
+				maps.WaveformUrl[key] = elem.WaveformUrl
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.WaveformUrl.String != waveformURL.String {
+
+					isValid[26] = false
+				}
+			}
+
 		}
 
 		header := ""
