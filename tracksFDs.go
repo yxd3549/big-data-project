@@ -255,153 +255,202 @@ func getValueByColumnNumTrack(loc int, elem track) string {
 	return ""
 }
 
-//func checkGroupsOfOne(data []user) [6][6]bool {
-//
-//	var relArr [6][6]bool
-//
-//	// Iterate through each column in db
-//	for group := 0; group < 6; group++ {
-//
-//		// All default to being valid functional dependencies. Change to false once we discover they are not
-//		// Reset after each group
-//		isValid := []bool{true, true, true, true, true, true}
-//
-//		// Need to create new maps for each group too or else we'll get collisions
-//		maps := genericMaps{
-//			Id:           make(map[string]int),
-//			Username:     make(map[string]sql.NullString),
-//			Kind:         make(map[string]sql.NullString),
-//			LastModified: make(map[string]sql.NullString),
-//			Permalink:    make(map[string]sql.NullString),
-//			Uri:          make(map[string]sql.NullString),
-//		}
-//
-//		// Iterate through each row in db
-//		for _, elem := range data {
-//
-//			key := getValueByColumnNum(group, elem)
-//
-//			// id
-//			id, ok := maps.Id[key]
-//
-//			if !ok {
-//				maps.Id[key] = elem.Id
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.Id != id {
-//
-//					isValid[0] = false
-//				}
-//			}
-//
-//			// username
-//			username, ok := maps.Username[key]
-//
-//			if !ok {
-//				maps.Username[key] = elem.Username
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.Username.String != username.String {
-//
-//					isValid[1] = false
-//				}
-//			}
-//
-//			// kind
-//			kind, ok := maps.Kind[key]
-//
-//			if !ok {
-//				maps.Kind[key] = elem.Kind
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.Kind.String != kind.String {
-//
-//					isValid[2] = false
-//				}
-//			}
-//
-//			// lastModified
-//			lastModified, ok := maps.LastModified[key]
-//
-//			if !ok {
-//				maps.LastModified[key] = elem.LastModified
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.LastModified.String != lastModified.String {
-//
-//					isValid[3] = false
-//				}
-//			}
-//
-//			// permalink
-//			permalink, ok := maps.Permalink[key]
-//
-//			if !ok {
-//				maps.Permalink[key] = elem.Permalink
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.Permalink.String != permalink.String {
-//
-//					isValid[4] = false
-//				}
-//			}
-//
-//			// uri
-//			uri, ok := maps.Uri[key]
-//
-//			if !ok {
-//				maps.Uri[key] = elem.Uri
-//			} else {
-//				// Since they differ, this is not a valid functional dependency
-//				if elem.Uri.String != uri.String {
-//
-//					isValid[5] = false
-//				}
-//			}
-//		}
-//
-//		header := ""
-//
-//		switch group {
-//		case 0:
-//			header += "id->"
-//		case 1:
-//			header += "username->"
-//		case 2:
-//			header += "kind->"
-//		case 3:
-//			header += "last_modified->"
-//		case 4:
-//			header += "permalink->"
-//		case 5:
-//			header += "uri->"
-//		}
-//
-//		for idx, valid := range isValid {
-//			if valid && idx != group {
-//				relArr[group][idx] = true
-//
-//				switch idx {
-//				case 0:
-//					println(header + "id")
-//				case 1:
-//					println(header + "username")
-//				case 2:
-//					println(header + "kind")
-//				case 3:
-//					println(header + "last_modified")
-//				case 4:
-//					println(header + "permalink")
-//				case 5:
-//					println(header + "uri")
-//				}
-//			}
-//		}
-//	}
-//
-//	return relArr
-//}
-//
+func checkGroupsOfOneTrack(data []track) [27][27]bool {
+
+	var relArr [27][27]bool
+
+	// Iterate through each column in db
+	for group := 0; group < 27; group++ {
+
+		// All default to being valid functional dependencies. Change to false once we discover they are not
+		// Reset after each group
+		isValid := []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+			true, true, true, true, true, true, true, true, true, true, true}
+
+		// Need to create new maps for each group too or else we'll get collisions
+		maps := genericTrackMaps{
+			Id:                  make(map[string]int),
+			Title:               make(map[string]sql.NullString),
+			Uri:                 make(map[string]sql.NullString),
+			Isrc:                make(map[string]sql.NullString),
+			Genre:               make(map[string]sql.NullInt32),
+			Kind:                make(map[string]sql.NullInt32),
+			License:             make(map[string]sql.NullInt32),
+			LikesCount:          make(map[string]sql.NullInt32),
+			Commentable:         make(map[string]sql.NullBool),
+			CommentCount:        make(map[string]sql.NullInt32),
+			Downloadable:        make(map[string]sql.NullBool),
+			DownloadCount:       make(map[string]sql.NullInt32),
+			CreatedAt:           make(map[string]sql.NullString),
+			Description:         make(map[string]sql.NullString),
+			Duration:            make(map[string]sql.NullInt32),
+			LableName:           make(map[string]sql.NullString),
+			LastModified:        make(map[string]sql.NullString),
+			OriginalContentSize: make(map[string]sql.NullInt32),
+			OriginalFormat:      make(map[string]sql.NullString),
+			Permalink:           make(map[string]sql.NullString),
+			PermalinkUrl:        make(map[string]sql.NullString),
+			PlaybackCount:       make(map[string]sql.NullInt32),
+			RetrievedUtc:        make(map[string]sql.NullInt32),
+			StreamUrl:           make(map[string]sql.NullString),
+			Streamable:          make(map[string]sql.NullBool),
+			TrackType:           make(map[string]sql.NullString),
+			WaveformUrl:         make(map[string]sql.NullString),
+		}
+
+		// Iterate through each row in db
+		for _, elem := range data {
+
+			key := getValueByColumnNumTrack(group, elem)
+
+			// id
+			id, ok := maps.Id[key]
+
+			if !ok {
+				maps.Id[key] = elem.Id
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Id != id {
+
+					isValid[0] = false
+				}
+			}
+
+			// title
+			title, ok := maps.Title[key]
+
+			if !ok {
+				maps.Title[key] = elem.Title
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Title.String != title.String {
+
+					isValid[1] = false
+				}
+			}
+
+			// uri
+			uri, ok := maps.Uri[key]
+
+			if !ok {
+				maps.Uri[key] = elem.Uri
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Uri.String != uri.String {
+
+					isValid[2] = false
+				}
+			}
+
+			// isrc
+			isrc, ok := maps.Isrc[key]
+
+			if !ok {
+				maps.Isrc[key] = elem.Isrc
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Isrc.String != isrc.String {
+
+					isValid[3] = false
+				}
+			}
+
+			// genre
+			genre, ok := maps.Genre[key]
+
+			if !ok {
+				maps.Genre[key] = elem.Genre
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Genre.Int32 != genre.Int32 {
+
+					isValid[4] = false
+				}
+			}
+
+			// kind
+			kind, ok := maps.Kind[key]
+
+			if !ok {
+				maps.Kind[key] = elem.Kind
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.Kind.Int32 != kind.Int32 {
+
+					isValid[5] = false
+				}
+			}
+
+			// license
+			license, ok := maps.License[key]
+
+			if !ok {
+				maps.License[key] = elem.License
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.License.Int32 != license.Int32 {
+
+					isValid[6] = false
+				}
+			}
+
+			// likesCount
+			likesCount, ok := maps.LikesCount[key]
+
+			if !ok {
+				maps.LikesCount[key] = elem.LikesCount
+			} else {
+				// Since they differ, this is not a valid functional dependency
+				if elem.LikesCount.Int32 != likesCount.Int32 {
+
+					isValid[7] = false
+				}
+			}
+
+		}
+
+		header := ""
+
+		switch group {
+		case 0:
+			header += "id->"
+		case 1:
+			header += "username->"
+		case 2:
+			header += "kind->"
+		case 3:
+			header += "last_modified->"
+		case 4:
+			header += "permalink->"
+		case 5:
+			header += "uri->"
+		}
+
+		for idx, valid := range isValid {
+			if valid && idx != group {
+				relArr[group][idx] = true
+
+				switch idx {
+				case 0:
+					println(header + "id")
+				case 1:
+					println(header + "username")
+				case 2:
+					println(header + "kind")
+				case 3:
+					println(header + "last_modified")
+				case 4:
+					println(header + "permalink")
+				case 5:
+					println(header + "uri")
+				}
+			}
+		}
+	}
+
+	return relArr
+}
+
 //func checkGroupOfTwo(data []user, relArr [6][6]bool) {
 //
 //	// Iterate through each column in db
@@ -577,7 +626,7 @@ func main() {
 	// Can't use go routines because I actually need checkGroupsOfOne to finish before checkGroupsOfTwo
 	// I'm going to keep a map of what functional dependencies I got from one and then not print them if that's what
 	// I get from two
-	//relArr := checkGroupsOfOne(data)
+	_ = checkGroupsOfOneTrack(data)
 	//checkGroupOfTwo(data, relArr)
 
 	t := time.Now()
