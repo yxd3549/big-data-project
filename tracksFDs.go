@@ -1367,7 +1367,7 @@ func checkGroupOfTwoTrack(data []track, relArr [27][27]bool) {
 	}
 }
 
-// run with go build userFDs.go
+// run with go build trackFDs.go
 func main() {
 	start := time.Now()
 
