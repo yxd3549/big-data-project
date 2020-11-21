@@ -10,7 +10,7 @@ import (
 )
 
 // Need to specifically create L1
-func createL1() {
+func createL1(minSupport string) {
 
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
 	if err != nil {
@@ -21,7 +21,7 @@ func createL1() {
 		"(SELECT tag as tag1, COUNT(tag) " +
 		"FROM track_label " +
 		"GROUP BY tag	" +
-		"HAVING COUNT(tag) >= 10000)"
+		"HAVING COUNT(tag) >= " + minSupport + ")"
 
 	commandTag, err := conn.Exec(context.Background(), queryString)
 
@@ -201,15 +201,13 @@ func generateGroupBy(lattice int) string {
 	return groupByString
 }
 
-func getFrequentTags() {
+func getFrequentTags(minSupport string) {
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	lattice := 2
-
-	minSupport := "10000"
 
 	for {
 
@@ -220,8 +218,6 @@ func getFrequentTags() {
 		queryString += generateGroupBy(lattice)
 		queryString += "HAVING COUNT(*) >= " + minSupport + ")"
 
-		fmt.Println(queryString)
-
 		commandTag, err := conn.Exec(context.Background(), queryString)
 
 		if err != nil {
@@ -230,8 +226,6 @@ func getFrequentTags() {
 
 		if commandTag.RowsAffected() == 0 {
 			break
-		} else {
-			fmt.Println("Lattice: " + strconv.Itoa(lattice) + " has " + strconv.Itoa(int(commandTag.RowsAffected())) + " entries")
 		}
 
 		lattice += 1
@@ -288,13 +282,72 @@ func getItemsFor10000() {
 	}
 }
 
+func getItemsFor5000() {
+
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	queryString := "SELECT a.tag, b.tag, c.tag, d.tag, e.tag, f.tag, g.tag, h.tag, i.tag " +
+		"FROM L9 " +
+		"INNER JOIN Tag a ON a.id = tag1 " +
+		"INNER JOIN Tag b ON b.id = tag2 " +
+		"INNER JOIN Tag c ON c.id = tag3 " +
+		"INNER JOIN Tag d ON d.id = tag4 " +
+		"INNER JOIN Tag e ON e.id = tag5 " +
+		"INNER JOIN Tag f ON f.id = tag6 " +
+		"INNER JOIN Tag g ON g.id = tag7 " +
+		"INNER JOIN Tag h ON h.id = tag8 " +
+		"INNER JOIN Tag i ON i.id = tag9 "
+
+	rows, err := conn.Query(context.Background(), queryString)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var tag1 string
+		var tag2 string
+		var tag3 string
+		var tag4 string
+		var tag5 string
+		var tag6 string
+		var tag7 string
+		var tag8 string
+		var tag9 string
+
+		err = rows.Scan(&tag1, &tag2, &tag3, &tag4, &tag5, &tag6, &tag7, &tag8, &tag9)
+		if err != nil {
+			log.Error(err)
+		}
+
+		fmt.Println(tag1+", "+tag2+", "+tag3+", "+tag4+", ", tag5+", "+
+			tag6+", "+tag7+", "+tag8+", "+tag9)
+
+	}
+
+	err = conn.Close(context.Background())
+	if err != nil {
+		log.Error(err)
+	}
+}
+
 func main() {
 	start := time.Now()
 
-	//createL1()
-	//getFrequentTags()
+	//createL1("10000")
+	//getFrequentTags("10000")
+	//getItemsFor10000()
 
-	getItemsFor10000()
+	createL1("5000")
+	getFrequentTags("5000")
+	getItemsFor5000()
+
 	t := time.Now()
 	elapsed := t.Sub(start)
 	fmt.Println(elapsed)
