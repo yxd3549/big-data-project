@@ -9,9 +9,39 @@ import (
 	"time"
 )
 
+// Need to specifically create L1
+func createL1() {
+
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	queryString := "CREATE TABLE L1 AS " +
+		"(SELECT tag as tag1, COUNT(tag) " +
+		"FROM track_label " +
+		"GROUP BY tag	" +
+		"HAVING COUNT(tag) >= 10000)"
+
+	commandTag, err := conn.Exec(context.Background(), queryString)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	if commandTag.RowsAffected() == 0 {
+		log.Error(err)
+	}
+
+	err = conn.Close(context.Background())
+	if err != nil {
+		log.Error(err)
+	}
+}
+
 func generateSelectString(lattice int) string {
 
-	selectColumn := "actor"
+	selectColumn := "tag"
 
 	selectString := "SELECT "
 
@@ -34,7 +64,7 @@ func generateSelectString(lattice int) string {
 
 func generateFromStatement(lattice int) string {
 
-	fromTable := "Popular_Movie_Actors"
+	fromTable := "track_label"
 
 	alphabetMap := make(map[int]string)
 	alphabetMap[0] = "a"
@@ -82,7 +112,7 @@ func generateFromStatement(lattice int) string {
 
 func generateWhereString(lattice int) string {
 
-	whereColumn := "actor"
+	whereColumn := "tag"
 
 	whereString := "WHERE "
 
@@ -139,7 +169,7 @@ func generateWhereString(lattice int) string {
 	whereString += "." + whereColumn + " = q." + whereColumn
 	whereString += strconv.Itoa(lattice - 1)
 
-	comparisonColumn := "title"
+	comparisonColumn := "track"
 
 	for i := 0; i < lattice-1; i++ {
 		whereString += " AND "
@@ -154,7 +184,7 @@ func generateWhereString(lattice int) string {
 
 func generateGroupBy(lattice int) string {
 
-	groupByColumn := "actor"
+	groupByColumn := "tag"
 
 	groupByString := "GROUP BY "
 
@@ -172,14 +202,14 @@ func generateGroupBy(lattice int) string {
 }
 
 func getFrequentTags() {
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/assignment_seven")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	lattice := 2
 
-	minSupport := "5"
+	minSupport := "10000"
 
 	for {
 
@@ -214,11 +244,57 @@ func getFrequentTags() {
 
 }
 
+func getItemsFor10000() {
+
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/soundcloud")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	queryString := "SELECT a.tag, b.tag, c.tag, d.tag " +
+		"FROM L4 " +
+		"INNER JOIN Tag a ON a.id = tag1 " +
+		"INNER JOIN Tag b ON b.id = tag2 " +
+		"INNER JOIN Tag c ON c.id = tag3 " +
+		"INNER JOIN Tag d ON d.id = tag4 "
+
+	rows, err := conn.Query(context.Background(), queryString)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var tag1 string
+		var tag2 string
+		var tag3 string
+		var tag4 string
+
+		err = rows.Scan(&tag1, &tag2, &tag3, &tag4)
+		if err != nil {
+			log.Error(err)
+		}
+
+		fmt.Println(tag1 + ", " + tag2 + ", " + tag3 + ", " + tag4)
+
+	}
+
+	err = conn.Close(context.Background())
+	if err != nil {
+		log.Error(err)
+	}
+}
+
 func main() {
 	start := time.Now()
 
-	getFrequentTags()
+	//createL1()
+	//getFrequentTags()
 
+	getItemsFor10000()
 	t := time.Now()
 	elapsed := t.Sub(start)
 	fmt.Println(elapsed)
